@@ -1,6 +1,7 @@
 from fastapi import FastAPI, APIRouter, Request, Depends
 from app.schemas.hero import Hero
 from app.schemas.user import User, UserCreate
+from app.schemas.pick import Pick
 from app.herodata import herodata
 from app import crud
 from sqlalchemy.orm import Session
@@ -27,16 +28,24 @@ async def fetch_hero(
     result = crud.hero.get(db=db, id=hero_id)
     if result:
         return result
-    
-@app.post("/user/", status_code=201, response_model=User)
-async def create_user(
-    user_in: UserCreate 
-    # db: Session = Depends(deps.get_db),
+
+@app.get("/pick/{pick_id}", status_code=200, response_model=Pick)
+async def fetch_pick(
+    pick_id: int,
+    db: Session = Depends(deps.get_db),
     ):
-    # user = crud.user.create(db=db, obj_in=user_in)
+    result = crud.pick.get(db=db, id=pick_id)
+    if result:
+        return result
     
-    # return user
-    return user_in
+@app.post("/user/", status_code=201, response_model=UserCreate)
+async def create_user(
+    user_in: UserCreate, 
+    db: Session = Depends(deps.get_db),
+    ):
+    user = crud.user.create(db=db, obj_in=user_in)
+    
+    return user
 
 app.include_router(api_router)
 

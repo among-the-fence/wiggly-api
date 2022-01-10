@@ -18,6 +18,5 @@ def main() -> None:
     init()
     logger.info("Initial data created")
 
-
 if __name__ == "__main__":
     main()
